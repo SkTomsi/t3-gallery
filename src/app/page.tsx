@@ -23,7 +23,7 @@ export default async function HomePage() {
   return (
     <main className="">
       <SignedOut>
-        <div className="flex h-full min-h-[50vh] w-full items-center justify-center text-center text-2xl font-bold">
+        <div className="flex h-full min-h-[50vh] w-full items-center justify-center text-2xl font-bold">
           Please
           <span className="ml-2 border-b-2 border-b-black">
             <SignInButton></SignInButton>
