@@ -2,6 +2,8 @@
 
 import { useRouter } from 'next/navigation';
 import { useUploadThing } from '~/utils/uploadthing';
+import { toast } from 'sonner';
+import { Loader } from 'lucide-react';
 
 // inferred input off useUploadThing
 type Input = Parameters<typeof useUploadThing>;
@@ -32,7 +34,23 @@ const useUploadThingInputProps = (...args: Input) => {
 export function SimpleUploadButton() {
   const router = useRouter();
   const { inputProps } = useUploadThingInputProps('imageUploader', {
+    onUploadBegin() {
+      toast(
+        <div className="flex gap-x-2">
+          <div className="animate-spin">
+            <Loader />
+          </div>
+          <div>Uploading...</div>
+        </div>,
+        {
+          duration: 100000,
+          id: 'upload-button',
+        },
+      );
+    },
     onClientUploadComplete() {
+      toast.dismiss('upload-button');
+      toast.success('Upload Completed!');
       router.refresh();
     },
   });
