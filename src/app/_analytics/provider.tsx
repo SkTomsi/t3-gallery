@@ -7,7 +7,8 @@ import React, { useEffect } from 'react';
 
 if (typeof window !== 'undefined') {
   posthog.init(process.env.NEXT_PUBLIC_POSTHOG_KEY!, {
-    api_host: process.env.NEXT_PUBLIC_POSTHOG_HOST,
+    api_host: '/ingest',
+    ui_host: 'https://us.i.posthog.com', // or 'https://eu.i.posthog.com' if your PostHog is hosted in Europe
   });
 }
 export function CSPostHogProvider({ children }: { children: React.ReactNode }) {
@@ -24,17 +25,18 @@ export function PostHogAuthWrapper({
   children: React.ReactNode;
 }) {
   const auth = useAuth();
-  const { user } = useUser();
+  const userInfo = useUser();
 
   useEffect(() => {
-    if (auth.userId) {
-      posthog.identify(user?.id, {
-        email: user?.emailAddresses[0],
+    if (userInfo?.user?.id) {
+      posthog.identify(userInfo.user?.id, {
+        email: userInfo.user?.emailAddresses[0]?.emailAddress,
+        name: userInfo.user.fullName,
       });
     } else if (!auth.isSignedIn) {
       posthog.reset();
     }
-  }, [auth, user]);
+  }, [auth, userInfo]);
 
   return children;
 }
